@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:form_page/pages/signup_page.dart';
 import 'package:form_page/providers/login_page_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'dart:ui';
+import 'package:flutter/gestures.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -106,13 +108,27 @@ class _LoginPageState extends State<LoginPage> {
                               height: 20,
                             ),
                             RichText(
-                              text: const TextSpan(
+                              text: TextSpan(
                                   text: "Don't have an account ",
-                                  style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
                                   children: [
                                     TextSpan(
                                       text: "REGISTER",
-                                      style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          // Define your navigation to the next page here
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const SignupPage()),
+                                          );
+                                        },
                                     )
                                   ]),
                             )
@@ -123,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 300,
+                  height: 250,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: value.imagesData.length,
@@ -136,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                             value.setBackImage(item['image']);
                           },
                           child: CircleAvatar(
-                            radius: 50,
+                            radius: 45,
                             backgroundImage: NetworkImage(item['image']),
                           ),
                         ),
