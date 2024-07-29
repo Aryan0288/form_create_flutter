@@ -17,12 +17,44 @@ class _HomePageState extends State<HomePage> {
       return Scaffold(
         appBar: AppBar(),
         body: SafeArea(
-          child: Column(
-            children: [
-              "home page".text.make()
-            ],
-          ),
-        ),
+            child: ListView.builder(
+                itemCount: value.foodCatagoryData.length - 1,
+                itemBuilder: (context, index) {
+                  final item = value.foodCatagoryData[index + 1];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 8),
+                    child: Card(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.network(
+                            item['strCategoryThumb'],
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 180,
+                          ).py(8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
+                            
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                "${item['strCategory']}".text.xl3.semiBold.make(),
+                                RichText(
+                                    text: TextSpan(
+                                        text: item['strCategoryDescription']
+                                            .substring(0, 50),
+                                        style:
+                                            const TextStyle(color: Colors.black,fontSize: 14),
+                                        children: const [TextSpan(text: "...")]))
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                })),
       );
     });
   }

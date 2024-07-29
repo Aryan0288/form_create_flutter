@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:form_page/pages/login_page.dart';
 // import 'package:form_page/pages/signup_page.dart';
 import 'package:form_page/providers/login_page_provider.dart';
+import 'package:form_page/styles/background_images.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'dart:ui';
@@ -69,7 +71,7 @@ class _LoginPageState extends State<SignupPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            "Register".text.xl4.white.medium.make(),
+                            Text("Register",style: GoogleFonts.actor(fontWeight: FontWeight.bold,fontSize: 36,color: Colors.white),),
                             const SizedBox(
                               height: 20,
                             ),
@@ -87,7 +89,7 @@ class _LoginPageState extends State<SignupPage> {
                                         suffixIconColor: Colors.white),
                                     validator: (value) {
                                       if (value.isEmptyOrNull) {
-                                        return "field is required";
+                                        return "Name is required";
                                       }
                                       return null;
                                     },
@@ -104,7 +106,7 @@ class _LoginPageState extends State<SignupPage> {
                                         suffixIconColor: Colors.white),
                                     validator: (value) {
                                       if (value.isEmptyOrNull) {
-                                        return "field is required";
+                                        return "Email is required";
                                       }
                                       return null;
                                     },
@@ -129,10 +131,11 @@ class _LoginPageState extends State<SignupPage> {
                                         suffixIconColor: Colors.white),
                                     validator: (value) {
                                       if (value.isEmptyOrNull) {
-                                        return "field is required";
+                                        return "Password is required";
+                                      } else if (value!.length < 6) {
+                                        return "Password length should 6";
                                       }
                                       return null;
-                                      // AIzaSyA2Z5CKwAdjy3hySG4SKt3_qs0pj7234XI
                                     },
                                   ),
                                   const SizedBox(
@@ -191,28 +194,7 @@ class _LoginPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 250,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: value.imagesData.length,
-                    itemBuilder: (context, index) {
-                      final item = value.imagesData[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            value.setBackImage(item['image']);
-                          },
-                          child: CircleAvatar(
-                            radius: 45,
-                            backgroundImage: NetworkImage(item['image']),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                const BackgroundImages()
               ],
             ),
           ),

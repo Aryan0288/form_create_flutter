@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:form_page/pages/home_page.dart';
 import 'package:form_page/pages/signup_page.dart';
 import 'package:form_page/providers/login_page_provider.dart';
+import 'package:form_page/styles/background_images.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'dart:ui';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +18,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final formKey = GlobalKey<FormState>();
+
+  void submitHandler() {
+    print("login");
+    if (formKey.currentState!.validate()) {
+      print("form");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const HomePage()));
+      return;
+    }
+    print("continue....");
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -54,54 +71,89 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            "Login".text.xl4.white.medium.make(),
+                            Text("Login",style: GoogleFonts.actor(fontWeight: FontWeight.bold,fontSize: 36,color: Colors.white),),
                             const SizedBox(
                               height: 20,
                             ),
-                            TextFormField(
-                              style: const TextStyle(
-                                  fontSize: 18, color: Colors.white),
-                              decoration: InputDecoration(
-                                  label: "Email".text.white.make(),
-                                  labelStyle: const TextStyle(fontSize: 22),
-                                  suffixIcon:
-                                      const Icon(Icons.mail_outline_rounded),
-                                  suffixIconColor: Colors.white),
-                            ),
-                            TextFormField(
-                              obscureText: value.visible,
-                              style: const TextStyle(
-                                  fontSize: 18, color: Colors.white),
-                              decoration: InputDecoration(
-                                  label: "Password".text.white.make(),
-                                  labelStyle: const TextStyle(fontSize: 22),
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      value.setVisible();
+                            Form(
+                              key: formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    style: const TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                    decoration: InputDecoration(
+                                        label: "Email".text.white.make(),
+                                        labelStyle:
+                                            const TextStyle(fontSize: 22),
+                                        suffixIcon: const Icon(
+                                            Icons.mail_outline_rounded),
+                                        suffixIconColor: Colors.white),
+                                    validator: (value) {
+                                      const pattern =
+                                          r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+                                          r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+                                          r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+                                          r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+                                          r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+                                          r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+                                          r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+                                      final regex = RegExp(pattern);
+                                      return value!.isEmpty ||
+                                              !regex.hasMatch(value)
+                                          ? 'Enter a valid email address'
+                                          : null;
                                     },
-                                    icon: value.visible
-                                        ? const Icon(Icons.visibility)
-                                        : const Icon(Icons.visibility_off),
                                   ),
-                                  suffixIconColor: Colors.white),
-                            ),
-                            const SizedBox(
-                              height: 60,
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    elevation: 8),
-                                child: "Log In"
-                                    .text
-                                    .xl
-                                    .medium
-                                    .color(Colors.deepPurple)
-                                    .make(),
+                                  TextFormField(
+                                    obscureText: value.visible,
+                                    style: const TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                    decoration: InputDecoration(
+                                        label: "Password".text.white.make(),
+                                        labelStyle:
+                                            const TextStyle(fontSize: 22),
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            value.setVisible();
+                                          },
+                                          icon: value.visible
+                                              ? const Icon(Icons.visibility)
+                                              : const Icon(
+                                                  Icons.visibility_off),
+                                        ),
+                                        suffixIconColor: Colors.white),
+                                    validator: (value) {
+                                      if (value.isEmptyOrNull) {
+                                        return "Password is required";
+                                      } else if (value!.length < 6) {
+                                        return "Password length should 6";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 60,
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        submitHandler();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          elevation: 8),
+                                      child: "Log In"
+                                          .text
+                                          .xl
+                                          .medium
+                                          .color(Colors.deepPurple)
+                                          .make(),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             const SizedBox(
@@ -110,13 +162,13 @@ class _LoginPageState extends State<LoginPage> {
                             RichText(
                               text: TextSpan(
                                   text: "Don't have an account ",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500),
                                   children: [
                                     TextSpan(
                                       text: "REGISTER",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500),
                                       recognizer: TapGestureRecognizer()
@@ -138,28 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 250,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: value.imagesData.length,
-                    itemBuilder: (context, index) {
-                      final item = value.imagesData[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            value.setBackImage(item['image']);
-                          },
-                          child: CircleAvatar(
-                            radius: 45,
-                            backgroundImage: NetworkImage(item['image']),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                const BackgroundImages(),
               ],
             ),
           ),
